@@ -54,9 +54,9 @@ class HeavyLoadExperiment:
       LazyList
         .range(0, 3)
         .foldLeft(initNeuralNetwork) { case (acc, _) =>
-          acc.fit(0.1, randomInputValues(), randomExpectedValues(), true)
+          acc.parFit(0.1, randomInputValues(), randomExpectedValues())
         }
-        .predict(randomInputValues(), true)
+        .parPredict(randomInputValues())
         .size
     val endMillis = System.currentTimeMillis()
     println(s"${endMillis - startMillis}: the duration of PARALLEL experiment")
