@@ -24,7 +24,7 @@ object NetworkSerialized:
   def toJson(network: Network): String =
     serialized(network)
       .asJson
-      .noSpaces
+      .spaces2
 
   def ofJson(s: String): Network =
     decode[NetworkSerialized](s)

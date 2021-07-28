@@ -56,7 +56,9 @@ case class Net(layers: LazyList[Layer]):
       .pipe(Network.output(_, false)(layers))
       .toList
 
-  /** Makes a prediction for the provided input in parallel.
+  /** Makes a prediction for the provided input.
+   * 
+   * The calculation is performed in parallel.
    * When the neural network has huge layers, the parallel calculation boosts the perforamnce.
    *
    * @param inputValues The values of the features. Their size should be equal to the size of the input layer.
@@ -81,6 +83,7 @@ case class Net(layers: LazyList[Layer]):
       .toList
 
   /** Returns the neural network with its weights adjusted to the provided observation.
+   * 
    * In order for it to be trained, it should fit with multiple observations,
    * usually by folding over an iterator.
    *
@@ -88,8 +91,6 @@ case class Net(layers: LazyList[Layer]):
    * @param inputValues    The features values of the observation.
    * @param expectedOutput The expected output of the observation.
    *                       It's size should be equal to the size of the output layer.
-   * @param inParallel     When the neural network has huge layers,
-   *                       setting this parameter to true, boosts the perforamnce of the calculation.
    * @return A new neural network that has the same shape of the original,
    *         but it has learned from a single observation.
    */
@@ -106,6 +107,8 @@ case class Net(layers: LazyList[Layer]):
       .pipe(Net.apply)
 
   /** Returns the neural network with its weights adjusted to the provided observation.
+   * 
+   * The calculation is performed in parallel.
    * When the neural network has huge layers, the parallel calculation boosts the perforamnce.
    *
    * @param learningRate   A number that controls how much the weights are adjusted to the observation.
@@ -149,22 +152,22 @@ case class Net(layers: LazyList[Layer]):
  *
  * 1. By providing its layer sizes. This constructor creates a random sigmoid neural network.
  * {{{
- *  Net(List(2, 3, 1))
+ *  val net = Net(List(2, 3, 1))
  * }}}
  *
  * 2. By providing its layer sizes and a seed. This constructor creates a non-random sigmoid neural network.
  * {{{
- *  Net(List(4, 6, 8, 5, 3), 1000)
+ *  val net = Net(List(4, 6, 8, 5, 3), 1000)
  * }}}
  *
  * 3. By providing its JSON representation.
  * {{{
- *  Net("""[[{"activationF":"sigmoid","weights":[-0.4,-0.1,-0.8]}]]""")
+ *  val net = Net("""[[{"activationF":"sigmoid","weights":[-0.4,-0.1,-0.8]}]]""")
  * }}}
  *
  * 4. By providing the size, the activation function and the weights for each layer.
  * {{{
- *  Net(List(4, 8, 3), _ => Fun.tanh, _ => Random().nextDouble())
+ *  val net = Net(List(4, 8, 3), _ => Fun.tanh, _ => Random().nextDouble())
  * }}}
  */
 object Net:
@@ -184,6 +187,7 @@ object Net:
       .pipe(Net.apply)
 
   /** Creates a random neural network.
+   * 
    * The activation function of the nodes is sigmoid.
    * The weight distribution of the synapses is normal between -1.0 and 1.0.
    *
@@ -199,6 +203,7 @@ object Net:
     apply(layerSizes, activationF, weightInitF)
 
   /** Creates a non-random neural network.
+   * 
    * Calling this function with the same parameters multiple times, should always return the same neural network.
    * The activation function of the nodes is sigmoid.
    * The weight distribution of the synapses is normal between -1.0 and 1.0.

@@ -78,7 +78,7 @@ object Preprocessor:
       .map(AttributeSerialized.serialized)
       .toList
       .asJson
-      .noSpaces
+      .spaces2
 
   def ofJson(json: String): Preprocessor =
     parser

@@ -61,25 +61,29 @@ case class Codec(attributes: LazyList[Attribute]):
  *
  * 1. By providing a list of pairs that define the name and the type of each attribute:
  * {{{
- *  Codec(List( ("petal_length", false),
- *              ("species", true) ),
- *        Iterator(Map("petal_length" -> "1.5",
- *                     "species" -> "setosa"),
- *                 Map("petal_length" -> "3.8",
- *                     "species" -> "versicolor")))
+ *  val codec = Codec(
+ *    List( ("petal_length", false),
+ *          ("species", true) ),
+ *    Iterator(Map("petal_length" -> "1.5",
+ *                 "species" -> "setosa"),
+ *             Map("petal_length" -> "3.8",
+ *                 "species" -> "versicolor"))
+ *  )
  * }}}
  *
  * 2. By providing its JSON representation.
  * {{{
- *  Codec("""[{"Case":"SerializableContinuous",
- *             "Fields":[{"key":"petal_length","min":1.5,"max":3.8}]},
- *            {"Case":"SerializableDiscrete",
- *             "Fields":[{"key":"species","values":["setosa","versicolor"]}]}]""")
+ *  val codec = Codec(
+ *    """[{"Case":"SerializableContinuous",
+ *         "Fields":[{"key":"petal_length","min":1.5,"max":3.8}]},
+ *        {"Case":"SerializableDiscrete",
+ *         "Fields":[{"key":"species","values":["setosa","versicolor"]}]}]"""
+ *  )
  * }}}
  */
 object Codec:
 
-  /** Creates a codec.
+  /** Creates a codec by consuming an iterator of data points.
    *
    * @param keysWithFlags A list of pairs that define the name and the type (discrete or not) of each attribute.
    * @param datapoints    An iterator that contains the data points.

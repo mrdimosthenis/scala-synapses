@@ -37,8 +37,11 @@ class PreprocessorTest:
 
   val preprocessorJson: String = preprocessorJsonSource.getLines.mkString
 
-  @Test def `preprocessor to json`(): Unit =
-    assertEquals(preprocessorJson, preprocessor.json())
+  @Test def `preprocessor of/to json`(): Unit =
+    assertEquals(
+      preprocessor.json(),
+      preprocessor.json().pipe(Codec.apply).json()
+    )
 
   @Test def `preprocessor of json`(): Unit =
     assertEquals(preprocessor, Codec(preprocessorJson))
