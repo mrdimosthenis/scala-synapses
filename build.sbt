@@ -17,5 +17,32 @@ lazy val root = project
       "io.circe" %% "circe-parser" % circeVersion,
       "com.novocode" % "junit-interface" % "0.11" % "test",
       "com.github.tototoshi" % "scala-csv_3" % "1.3.8" % "test"
+    ),
+
+    organization := "com.github.mrdimosthenis",
+
+    homepage := Some(url("https://github.com/mrdimosthenis/Synapses")),
+
+    scmInfo := Some(
+      ScmInfo(url("https://github.com/mrdimosthenis/scala-synapses"),
+        "git@github.com:mrdimosthenis/scala-synapses.git")
+      ),
+
+    developers := List(Developer(
+      "mrdimosthenis",
+      "Dimos Michailidis",
+      "mrdimosthenis@hotmail.com",
+      url("https://github.com/mrdimosthenis")
+    )),
+
+    licenses += ("MIT", url("https://rem.mit-license.org/")),
+
+    publishMavenStyle := true,
+
+    publishTo := Some(
+      if (isSnapshot.value)
+        Opts.resolver.sonatypeSnapshots
+      else
+        Opts.resolver.sonatypeStaging
     )
   )
