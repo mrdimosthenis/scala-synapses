@@ -6,7 +6,6 @@ lazy val root = project
   .in(file("."))
   .settings(
     name := "synapses",
-    version := "8.0.0-RC1",
 
     scalaVersion := scala3Version,
 
