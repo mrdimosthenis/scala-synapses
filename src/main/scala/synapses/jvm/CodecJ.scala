@@ -1,10 +1,11 @@
 package synapses.jvm
 
+import synapses.custom.AttributeWithFlag
+
 import scala.jdk.StreamConverters._
 import scala.jdk.FunctionConverters._
 import scala.jdk.CollectionConverters._
 import scala.util.chaining._
-import synapses.custom.Tuple
 import synapses.lib.Codec
 
 case class CodecJ(codec: Codec):
@@ -27,12 +28,12 @@ case class CodecJ(codec: Codec):
 
 object CodecJ:
 
-  def apply(keysWithFlags: Array[Tuple[String, Boolean]],
+  def apply(keysWithFlags: Array[AttributeWithFlag],
             datapoints: java.util.stream.Stream[java.util.Map[String, String]]): CodecJ =
     val keysFlags =
       keysWithFlags
         .map { t =>
-          (t.x, t.y)
+          (t.attribute, t.flag)
         }
         .toList
     val points =

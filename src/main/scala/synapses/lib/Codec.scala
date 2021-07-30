@@ -85,13 +85,13 @@ object Codec:
 
   /** Creates a codec by consuming an iterator of data points.
    *
-   * @param keysWithFlags A list of pairs that define the name and the type (discrete or not) of each attribute.
-   * @param datapoints    An iterator that contains the data points.
+   * @param attributesWithFlag A list of pairs that define the name and the type (discrete or not) of each attribute.
+   * @param datapoints          An iterator that contains the data points.
    * @return A codec that can encode and decode every data point.
    */
-  def apply(keysWithFlags: List[(String, Boolean)],
+  def apply(attributesWithFlag: List[(String, Boolean)],
             datapoints: Iterator[Map[String, String]]): Codec =
-    keysWithFlags
+    attributesWithFlag
       .to(LazyList)
       .pipe(Preprocessor.init(_, datapoints))
       .pipe(Codec.apply)
