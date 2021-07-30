@@ -59,8 +59,6 @@ val net = Net("""[
  ]""")
 ```
 
-`net` has the same layer sizes as `randNet`, but different weights.
-
 * Make a prediction
 
 ```scala mdoc
