@@ -10,7 +10,7 @@ A lightweight library for **neural networks** written in **Scala**!
 libraryDependencies += "com.github.mrdimosthenis" %% "synapses" % "8.0.0-RC3"
 ```
 
-* Import the 'Net' object
+* Import the `Net` object
 
 ```scala mdoc
 import synapses.lib.Net
