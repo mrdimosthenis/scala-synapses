@@ -32,3 +32,9 @@ lazy val root = project
       "com.github.tototoshi" % "scala-csv_3" % "1.3.8" % "test"
     )
   )
+
+lazy val docs = project
+  .in(file("myproject-docs"))
+  .settings(scalaVersion := scala3Version)
+  .dependsOn(root)
+  .enablePlugins(MdocPlugin)
