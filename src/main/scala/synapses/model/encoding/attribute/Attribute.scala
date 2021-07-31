@@ -1,6 +1,9 @@
 package synapses.model.encoding.attribute
 
-import java.text.DecimalFormat
+import io.circe._
+import io.circe.generic.auto._
+import io.circe.parser._
+import io.circe.syntax._
 import scala.util.chaining._
 
 enum Attribute(val key: String):
@@ -66,7 +69,7 @@ object Attribute:
 
       case Continuous(_, min, max) =>
         if min == max then
-          DecimalFormat("0.#").format(min)
+          min.asJson.noSpaces
         else
           val v = encodedValues.head * (max - min) + min
-          DecimalFormat("0.#").format(v)
+          v.asJson.noSpaces

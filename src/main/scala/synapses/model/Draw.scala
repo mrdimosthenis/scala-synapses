@@ -1,5 +1,9 @@
 package synapses.model
 
+import io.circe._
+import io.circe.generic.auto._
+import io.circe.parser._
+import io.circe.syntax._
 import synapses.model.net_elems.activation.Activation
 import synapses.model.net_elems.layer.Layer
 import synapses.model.net_elems.neuron.Neuron
@@ -30,6 +34,9 @@ object Draw:
   private val positiveLineStroke = "lawngreen"
   private val negativeLineStroke = "palevioletred"
 
+  private def fmt(x: Double): String =
+    x.asJson.noSpaces
+
   private def activationNameToStroke(activation: Activation): String =
     activation match
       case Activation.Sigmoid => sigmoidCircleStroke
@@ -55,7 +62,7 @@ object Draw:
       (2 * circleRadius + circleVerticalDistance)
 
   private def circleSVG(x: Double, y: Double, stroke_val: String): String =
-    f"""<circle cx="$x%f" cy="$y%f" r="$circleRadius%f" stroke="$stroke_val%s" stroke-width="$circleStrokeWidth%f" fill="$circleFill%s"></circle>"""
+    f"""<circle cx="${fmt(x)}" cy="${fmt(y)}" r="${fmt(circleRadius)}" stroke="$stroke_val" stroke-width="${fmt(circleStrokeWidth)}" fill="$circleFill"></circle>"""
 
   private def inputCirclesSVGs(maxChainCircles: Int,
                                inputCircles: Int): LazyList[String] =
@@ -155,7 +162,7 @@ object Draw:
         positiveLineStroke
       else
         negativeLineStroke
-    f"""<line stroke-opacity="$alpha%f" x1="$x1_val%f" y1="$y1_val%f" x2="$x2_val%f" y2="$y2_val%f" stroke="$stroke_val%s" stroke-width="$lineStrokeWidth%f"></line>"""
+    f"""<line stroke-opacity="${fmt(alpha)}" x1="${fmt(x1_val)}" y1="${fmt(y1_val)}" x2="${fmt(x2_val)}" y2="${fmt(y2_val)}" stroke="$stroke_val" stroke-width="${fmt(lineStrokeWidth)}"></line>"""
 
   private def neuronLinesSVGs(maxChainCircles: Int,
                               layerSize: Int,
@@ -260,4 +267,4 @@ object Draw:
       maxChainCircles
     )
     val netSVGs = linesSVGs ++ circlesSVGs
-    f"""<svg width="$w%f" height="$h%f">${netSVGs.mkString("")}%s</svg>"""
+    f"""<svg width="${fmt(w)}" height="${fmt(h)}">${netSVGs.mkString("")}%s</svg>"""
