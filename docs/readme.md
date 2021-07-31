@@ -22,9 +22,9 @@ import synapses.lib.Net
 val randNet = Net(List(2, 3, 1))
 ```
 
-The first (input) layer of the network has 2 nodes,
-the second (hidden) layer has 3 neurons,
-and the third (output) layer has 1 neurons.
+* Input layer: the first layer of the network has 2 nodes.
+* Hidden layer: the second layer has 3 neurons.
+* Output layer: the third layer has 1 neuron.
 
 #### Get the json of the random neural network
 
