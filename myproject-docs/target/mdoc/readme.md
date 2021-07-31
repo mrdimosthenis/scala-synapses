@@ -1,61 +1,32 @@
 # scala-synapses
 
-A lightweight library for **neural networks** written in **Scala**!
+A lightweight library for **neural networks** written in **Scala 3**!
 
 ## Basic usage
 
-* Add this line to your `build.sbt` file
+### Install synapses
 
 ```scala
 libraryDependencies += "com.github.mrdimosthenis" %% "synapses" % "8.0.0-RC3"
 ```
 
-* Import the `Net` object
+### Import the `Net` object
 
 ```scala
 import synapses.lib.Net
 ```
 
-* Create a random neural network by providing its layer sizes
+### Create a random neural network by providing its layer sizes
 
 ```scala
 val randNet = Net(List(2, 3, 1))
-// randNet: Net = Net(
-//   LazyList(
-//     LazyList(
-//       Neuron(
-//         Sigmoid,
-//         LazyList(-0.5992706028339825, 0.8539319792607571, 0.22531536843483813)
-//       ),
-//       Neuron(
-//         Sigmoid,
-//         LazyList(0.2823930892827673, -0.14616485389053446, -0.5255789342250927)
-//       ),
-//       Neuron(
-//         Sigmoid,
-//         LazyList(0.43834833148387076, -0.0961605440612181, -0.6965642461777182)
-//       )
-//     ),
-//     LazyList(
-//       Neuron(
-//         Sigmoid,
-//         LazyList(
-//           0.09431404104679508,
-//           0.6095080337477099,
-//           -0.6872254795147608,
-//           -0.15132082995925944
-//         )
-//       )
-//     )
-//   )
-// )
 ```
 
 The first (input) layer of the network has 2 nodes,
 the second (hidden) layer has 3 neurons,
 and the third (output) layer has 1 neurons.
 
-* Get the JSON representation of the random neural network
+### Get the json of the random neural network
 
 ```scala
 randNet.json()
@@ -63,44 +34,27 @@ randNet.json()
 //   [
 //     {
 //       "activationF" : "sigmoid",
-//       "weights" : [
-//         -0.5992706028339825,
-//         0.8539319792607571,
-//         0.22531536843483813
-//       ]
+//       "weights" : [-0.5,0.1,0.8]
 //     },
 //     {
 //       "activationF" : "sigmoid",
-//       "weights" : [
-//         0.2823930892827673,
-//         -0.14616485389053446,
-//         -0.5255789342250927
-//       ]
+//       "weights" : [0.7,0.6,-0.1]
 //     },
 //     {
 //       "activationF" : "sigmoid",
-//       "weights" : [
-//         0.43834833148387076,
-//         -0.0961605440612181,
-//         -0.6965642461777182
-//       ]
+//       "weights" : [-0.8,-0.1,-0.7]
 //     }
 //   ],
 //   [
 //     {
 //       "activationF" : "sigmoid",
-//       "weights" : [
-//         0.09431404104679508,
-//         0.6095080337477099,
-//         -0.6872254795147608,
-//         -0.15132082995925944
-//       ]
+//       "weights" : [0.5,-0.3,-0.4,-0.5]
 //     }
 //   ]
 // ]"""
 ```
 
-* Create a neural network by providing its JSON representation
+### Create a neural network by providing its json
 
 ```scala
 val net = Net("""[
@@ -125,67 +79,34 @@ val net = Net("""[
      }
    ]
  ]""")
-// net: Net = Net(
-//   LazyList(
-//     LazyList(
-//       Neuron(Sigmoid, LazyList(-0.5, 0.1, 0.8)),
-//       Neuron(Sigmoid, LazyList(0.7, 0.6, -0.1)),
-//       Neuron(Sigmoid, LazyList(-0.8, -0.1, -0.7))
-//     ),
-//     LazyList(Neuron(Sigmoid, LazyList(0.5, -0.3, -0.4, -0.5)))
-//   )
-// )
 ```
 
-* Make a prediction
+### Make a prediction
 
 ```scala
 net.predict(List(0.2, 0.6))
 // res1: List[Double] = List(0.49131100324012494)
 ```
 
-* Train a neural network
+### Train a neural network
 
 ```scala
-val fitNet = net.fit(
+net.fit(
     learningRate = 0.1,
     inputValues = List(0.2, 0.6),
     expectedOutput = List(0.9)
 )
-// fitNet: Net = Net(
-//   LazyList(
-//     LazyList(
-//       Neuron(
-//         Sigmoid,
-//         LazyList(-0.4987232325785445, 0.1002553534842911, 0.8007660604528734)
-//       ),
-//       Neuron(
-//         Sigmoid,
-//         LazyList(0.7015109701815497, 0.6003021940363099, -0.09909341789107015)
-//       ),
-//       Neuron(
-//         Sigmoid,
-//         LazyList(-0.7996009710421346, -0.09992019420842692, -0.6997605826252806)
-//       )
-//     ),
-//     LazyList(
-//       Neuron(
-//         Sigmoid,
-//         LazyList(
-//           0.5102141393716438,
-//           -0.29489293031417807,
-//           -0.39304055800168897,
-//           -0.49770757956173206
-//         )
-//       )
-//     )
-//   )
-// )
 ```
 
-`fitNet` is the updated `net`, fitted with a single observation.
+The `fit` method returns the neural network with its weights adjusted to a single observation.
 
-For a neural network to be trained, it should be fitted with multiple observations,
+## Advanced usage
+
+### Neural Network
+
+#### Fully train a neural network
+
+In practice, for a neural network to be fully trained, it should be fitted with multiple observations,
 usually by folding over an iterator.
 
 ```scala
@@ -196,33 +117,59 @@ Iterator(
 ).foldLeft(net){ case (acc, (xs, ys)) =>
     acc.fit(learningRate = 0.1, xs, ys)
 }
-// res2: Net = Net(
-//   LazyList(
-//     LazyList(
-//       Neuron(
-//         Sigmoid,
-//         LazyList(-0.49939244729968957, 0.10031837690581497, 0.8001007437823189)
-//       ),
-//       Neuron(
-//         Sigmoid,
-//         LazyList(0.7008135150375799, 0.6003940375743398, -0.09981297105867289)
-//       ),
-//       Neuron(
-//         Sigmoid,
-//         LazyList(-0.799718797676025, -0.09988166956726867, -0.6999051512369404)
-//       )
-//     ),
-//     LazyList(
-//       Neuron(
-//         Sigmoid,
-//         LazyList(
-//           0.5055696838216472,
-//           -0.297587306484989,
-//           -0.39596102720562515,
-//           -0.49853333418344103
-//         )
-//       )
-//     )
-//   )
-// )
 ```
+
+#### Boost the performance
+
+Every function is efficient because its implementation is based on lazy list
+and all information is obtained at a single pass.
+
+For a neural network that has huge layers,
+the performance of its `predict` and `fit` methods can be further improved
+by using their parallel counterparts, `parPredict` and `parFit`.
+
+#### Create a neural network for testing
+
+```scala
+Net(layerSizes = List(2, 3, 1), seed = 1000)
+```
+
+We can provide a `seed` to create a non-random neural network.
+This way, we can use it for testing.
+
+#### Define the activation functions and the weights
+
+```scala
+import scala.util.Random
+import synapses.lib.Fun
+
+def activationF(layerIndex: Int): Fun =
+    layerIndex match
+      case 0 => Fun.sigmoid
+      case 1 => Fun.identity
+      case 2 => Fun.leakyReLU
+      case 3 => Fun.tanh
+
+def weightInitF(layerIndex: Int): Double =
+    (layerIndex + 1) * (1.0 - 2.0 * Random().nextDouble())
+
+val customNet = Net(layerSizes = List(4, 6, 8, 5, 3), activationF, weightInitF)
+```
+
+The `activationF` function accepts the index of a layer and returns an activation function for its neurons.
+The `weightInitF` function accepts the index of a layer and returns a weight for the synapses of its neurons.
+
+If we don't provide these functions, the activation function of all neurons is sigmoid,
+and the weight distribution of the synapses is normal between -1.0 and 1.0.
+
+#### Draw a neural network
+
+```scala
+customNet.svg()
+```
+
+![Network Drawing](https://github.com/mrdimosthenis/Synapses/blob/master/neural_network.png?raw=true)
+
+With its svg drawing, we can see what a neural network looks like .
+The color of each neuron depends on its activation function
+while the transparency of the synapses depends on their weight.
