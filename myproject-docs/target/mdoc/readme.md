@@ -207,7 +207,7 @@ def dataset() = Iterator(setosa,versicolor,virginica)
 
 You can use a `Codec` to encode and decode a data point.
 
-### Create a `Codec` by providing attributes and the data points
+### Create a `Codec` by providing the attributes and the data points
 
 ```scala
 val codec = Codec(
