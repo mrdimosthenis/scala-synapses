@@ -1,6 +1,16 @@
 /project/project/
 /project/target/
-/target/
+/target/global-logging/
+/target/scala-2.12/
+/target/scala-3.0.1/classes/
+/target/scala-3.0.1/test-classes/
+/target/scala-3.0.1/test-zinc/
+/target/scala-3.0.1/update/
+/target/scala-3.0.1/zinc/
+/target/streams/
+/target/task-temp-directory/
+/target/test-reports/
+/target/.history3
 /.bsp/
 /.idea/
 /synapses-docs/
