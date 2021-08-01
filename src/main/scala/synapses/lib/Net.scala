@@ -188,7 +188,7 @@ object Net:
 
   /** Creates a random neural network.
    * 
-   * The activation function of the nodes is sigmoid.
+   * The activation function of all neurons is sigmoid.
    * The weight distribution of the synapses is normal between -1.0 and 1.0.
    *
    * @param layerSizes The size of each layer.

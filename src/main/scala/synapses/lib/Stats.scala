@@ -3,7 +3,7 @@ package synapses.lib
 import scala.util.chaining._
 import synapses.model.Mathematics
 
-/** Measure the difference between the values predicted by a neural network and the values observed.
+/** Measure the difference between the values predicted by a neural network and the observed values.
  *
  * Calculate the root mean square error:
  * {{{
