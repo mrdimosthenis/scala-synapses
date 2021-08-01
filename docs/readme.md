@@ -1,6 +1,6 @@
 # scala-synapses
 
-A lightweight library for **neural networks** written in **Scala 3**!
+A plug and play library for **neural networks** written in **Scala 3**!
 
 ## Basic usage
 

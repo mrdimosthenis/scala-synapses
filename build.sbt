@@ -34,7 +34,10 @@ lazy val root = project
   )
 
 lazy val docs = project
-  .in(file("myproject-docs"))
-  .settings(scalaVersion := scala3Version)
+  .in(file("synapses-docs"))
+  .settings(
+    scalaVersion := scala3Version,
+    mdocOut := (LocalRootProject / baseDirectory).value,
+  )
   .dependsOn(root)
   .enablePlugins(MdocPlugin)

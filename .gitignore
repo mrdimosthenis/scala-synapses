@@ -3,6 +3,4 @@
 /target/
 /.bsp/
 /.idea/
-/myproject-docs/target/scala-2.12/
-/myproject-docs/target/scala-3.0.1/
-/myproject-docs/target/streams/
+/synapses-docs/
