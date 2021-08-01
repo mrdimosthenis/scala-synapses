@@ -7,7 +7,7 @@ A plug and play library for **neural networks** written in **Scala 3**!
 ### Install synapses
 
 ```scala
-libraryDependencies += "com.github.mrdimosthenis" %% "synapses" % "8.0.0-RC3"
+libraryDependencies += "com.github.mrdimosthenis" %% "synapses" % "8.0.0"
 ```
 
 ### Import the `Net` object

@@ -7,7 +7,7 @@ package synapses
  * ### Install synapses
  *
  * ```scala
- * libraryDependencies += "com.github.mrdimosthenis" %% "synapses" % "8.0.0-RC3"
+ * libraryDependencies += "com.github.mrdimosthenis" %% "synapses" % "8.0.0"
  * ```
  *
  * ### Import the `Net` object
