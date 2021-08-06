@@ -1,5 +1,6 @@
 /project/project/
 /project/target/
+/target/*.jar
 /target/bg-jobs/
 /target/global-logging/
 /target/scala-2.12/
