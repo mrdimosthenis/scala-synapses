@@ -35,7 +35,7 @@ case class Codec(attributes: LazyList[Attribute]):
 
   /** Decodes a data point.
    *
-   * @param datapoint A data point as a list of numbers between 0.0 and 1.0.
+   * @param encodedValues An encoded data point as a list of numbers between 0.0 and 1.0.
    * @return The decoded data point as a map of strings.
    */
   def decode(encodedValues: List[Double]): Map[String, String] =

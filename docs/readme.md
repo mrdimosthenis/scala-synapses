@@ -1,6 +1,6 @@
 # scala-synapses
 
-A plug and play library for **neural networks** written in **Scala 3**!
+A plug-and-play library for **neural networks** written in **Scala 3**!
 
 ## Basic usage
 
@@ -89,9 +89,8 @@ Iterator(
 Every function is efficient because its implementation is based on lazy list
 and all information is obtained at a single pass.
 
-For a neural network that has huge layers,
-the performance of its `predict` and `fit` methods can be further improved
-by using their parallel counterparts, `parPredict` and `parFit`.
+For a neural network that has huge layers, the performance can be further improved
+by using the parallel counterparts of `predict` and `fit` (`parPredict` and `parFit`).
 
 ### Create a neural network for testing
 
@@ -135,7 +134,7 @@ customNet.svg()
 
 ![Network Drawing](https://github.com/mrdimosthenis/scala-synapses/blob/master/neural_network.png?raw=true)
 
-With its svg drawing, we can see what a neural network looks like .
+With its svg drawing, we can see what a neural network looks like.
 The color of each neuron depends on its activation function
 while the transparency of the synapses depends on their weight.
 

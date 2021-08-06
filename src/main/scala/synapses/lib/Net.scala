@@ -59,7 +59,7 @@ case class Net(layers: LazyList[Layer]):
   /** Makes a prediction for the provided input.
    * 
    * The calculation is performed in parallel.
-   * When the neural network has huge layers, the parallel calculation boosts the perforamnce.
+   * When the neural network has huge layers, the parallel calculation boosts the performance.
    *
    * @param inputValues The values of the features. Their size should be equal to the size of the input layer.
    * @return The prediction. It's size should be equal to the size of the output layer.
@@ -88,7 +88,7 @@ case class Net(layers: LazyList[Layer]):
    * usually by folding over an iterator.
    *
    * @param learningRate   A number that controls how much the weights are adjusted to the observation.
-   * @param inputValues    The features values of the observation.
+   * @param inputValues    The feature values of the observation.
    * @param expectedOutput The expected output of the observation.
    *                       It's size should be equal to the size of the output layer.
    * @return A new neural network that has the same shape of the original,
@@ -109,10 +109,10 @@ case class Net(layers: LazyList[Layer]):
   /** Returns the neural network with its weights adjusted to the provided observation.
    * 
    * The calculation is performed in parallel.
-   * When the neural network has huge layers, the parallel calculation boosts the perforamnce.
+   * When the neural network has huge layers, the parallel calculation boosts the performance.
    *
    * @param learningRate   A number that controls how much the weights are adjusted to the observation.
-   * @param inputValues    The features values of the observation.
+   * @param inputValues    The feature values of the observation.
    * @param expectedOutput The expected output of the observation.
    *                       It's size should be equal to the size of the output layer.
    * @return A new neural network that has the same shape of the original,
