@@ -16,7 +16,7 @@ import synapses.model.net_elems.network._
  *
  * Fit network to a single observation:
  * {{{
- *  net.fit(0.1, List(0.4, 0.05, 0.2), List(0.03. 0.8))
+ *  net.fit(0.1, List(0.4, 0.05, 0.2), List(0.03, 0.8))
  * }}}
  *
  * Get the JSON representation of the network:
