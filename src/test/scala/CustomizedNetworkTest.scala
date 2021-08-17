@@ -49,7 +49,7 @@ class CustomizedNetworkTest:
     Net(neuralNetworkJson)
 
   val prediction: List[Double] =
-    neuralNetwork.predict(inputValues)
+    neuralNetwork.parPredict(inputValues)
 
   @Test def `neural network prediction`(): Unit =
     assertEquals(
@@ -61,23 +61,23 @@ class CustomizedNetworkTest:
 
   @Test def `neural network normal errors`(): Unit =
     assertEquals(
-      neuralNetwork.errors(inputValues, expectedOutput),
+      neuralNetwork.errors(inputValues, expectedOutput, true),
       List(-0.18229373795952453, -0.10254022760223255, -0.09317233470223055, -0.086806455078946)
     )
 
   @Test def `neural network zero errors`(): Unit =
     assertEquals(
       List(0, 0, 0, 0),
-      neuralNetwork.errors(inputValues, prediction)
+      neuralNetwork.errors(inputValues, prediction, true)
     )
 
   val fitNet: Net =
-    neuralNetwork.fit(learningRate, inputValues, expectedOutput)
+    neuralNetwork.parFit(learningRate, inputValues, expectedOutput)
 
   @Test def `fit neural network prediction`(): Unit =
     assertEquals(
       List(-0.006109464554743645, -0.1770428172237149, 0.6087944183600162),
-      fitNet.predict(inputValues)
+      fitNet.parPredict(inputValues)
     )
 
   @Test def `neural network svg`(): Unit =
