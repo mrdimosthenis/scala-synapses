@@ -39,7 +39,7 @@ case class NetJ(net: Net):
       expectedOutput.toList,
     ).pipe(NetJ.apply)
 
-  def fitPar(learningRate: Double,
+  def parFit(learningRate: Double,
              inputValues: Array[Double],
              expectedOutput: Array[Double]): NetJ =
     net.parFit(
