@@ -1,6 +1,5 @@
 package synapses.model.net_elems.layer
 
-import scala.collection.parallel.immutable.ParVector
 import synapses.model.net_elems.activation.Activation
 import synapses.model.net_elems.neuron.Neuron
 
@@ -15,10 +14,7 @@ object Layer:
 
   extension[A] (lazyList: LazyList[A])
     def pmap[B](f: A => B): LazyList[B] =
-      lazyList
-        .to(ParVector)
-        .map(f)
-        .to(LazyList)
+      lazyList.map(f)
 
   def init(inputSize: Int,
            outputSize: Int,

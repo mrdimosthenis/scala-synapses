@@ -1,5 +1,6 @@
 package synapses.lib
 
+import scala.scalajs.js.annotation.{JSExport, JSExportTopLevel}
 import synapses.model.net_elems.activation.Activation
 
 type Fun = Activation
@@ -24,6 +25,7 @@ type Fun = Activation
  *  Net(List(2, 1), _ => Fun.leakyReLU, _ => Random().nextDouble())
  * }}}
  */
+@JSExportTopLevel("FunJs")
 object Fun:
 
   /** Sigmoid takes any real value as input and outputs values in the range of 0 to 1.
@@ -32,6 +34,7 @@ object Fun:
    *  x => 1.0 / (1.0 + Math.exp(-x))
    * }}}
    */
+  @JSExport
   val sigmoid: Fun = Activation.Sigmoid
 
 
@@ -41,6 +44,7 @@ object Fun:
    *  x => x
    * }}}
    */
+  @JSExport
   val identity: Fun = Activation.Identity
 
   /** Tanh is similar to Sigmoid, but outputs values in the range of -1 and 1.
@@ -49,6 +53,7 @@ object Fun:
    *  x => Math.tanh(x)
    * }}}
    */
+  @JSExport
   val tanh: Fun = Activation.Tanh
 
 
@@ -58,4 +63,5 @@ object Fun:
    *  x => if x < 0.0 then 0.01 * x else x
    * }}}
    */
+  @JSExport
   val leakyReLU: Fun = Activation.LeakyReLU

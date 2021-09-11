@@ -1,6 +1,9 @@
 package synapses.lib
 
-import scala.util.chaining._
+import scala.scalajs.js
+import scala.scalajs.js.annotation.{JSExport, JSExportTopLevel}
+import scala.scalajs.js.JSConverters._
+import scala.util.chaining.*
 import synapses.model.encoding.attribute.Attribute
 import synapses.model.encoding.Preprocessor
 
@@ -21,6 +24,7 @@ import synapses.model.encoding.Preprocessor
  *  codec.json()
  * }}}
  */
+@JSExportTopLevel("CodecJs")
 case class Codec(attributes: LazyList[Attribute]):
 
   /** Encodes a data point.
@@ -28,25 +32,29 @@ case class Codec(attributes: LazyList[Attribute]):
    * @param datapoint A data point as a map of strings.
    * @return The encoded data point as a list of numbers between 0.0 and 1.0.
    */
-  def encode(datapoint: Map[String, String]): List[Double] =
+  @JSExport
+  def encode(datapoint: js.Dictionary[String]): js.Array[Double] =
     Preprocessor
-      .encode(datapoint)(attributes)
-      .toList
+      .encode(datapoint.toMap)(attributes)
+      .toJSArray
 
   /** Decodes a data point.
    *
    * @param encodedValues An encoded data point as a list of numbers between 0.0 and 1.0.
    * @return The decoded data point as a map of strings.
    */
-  def decode(encodedValues: List[Double]): Map[String, String] =
+  @JSExport
+  def decode(encodedValues: js.Array[Double]): js.Dictionary[String] =
     encodedValues
       .to(LazyList)
       .pipe(Preprocessor.decode(_)(attributes))
+      .toJSDictionary
 
   /** The JSON representation of the codec.
    *
    * @return The JSON representation of the codec.
    */
+  @JSExport
   def json(): String =
     Preprocessor.toJson(attributes)
 
@@ -81,19 +89,24 @@ case class Codec(attributes: LazyList[Attribute]):
  *  )
  * }}}
  */
+@JSExportTopLevel("CodecJsObj")
 object Codec:
 
   /** Creates a codec by consuming an iterator of data points.
    *
    * @param attributesWithFlag A list of pairs that define the name and the type (discrete or not) of each attribute.
-   * @param datapoints          An iterator that contains the data points.
+   * @param datapoints         An iterator that contains the data points.
    * @return A codec that can encode and decode every data point.
    */
-  def apply(attributesWithFlag: List[(String, Boolean)],
-            datapoints: Iterator[Map[String, String]]): Codec =
+  @JSExport("apply")
+  def apply[A](attributesWithFlag: js.Array[js.Array[A]],
+               datapoints: js.Iterable[js.Dictionary[String]]): Codec =
     attributesWithFlag
       .to(LazyList)
-      .pipe(Preprocessor.init(_, datapoints))
+      .map { arr =>
+        (arr(0).asInstanceOf[String], arr(1).asInstanceOf[Boolean])
+      }
+      .pipe(Preprocessor.init(_, datapoints.map(_.toMap).to(Iterator)))
       .pipe(Codec.apply)
 
   /** Parses a codec.
@@ -101,6 +114,7 @@ object Codec:
    * @param json The JSON representation of a codec.
    * @return A codec that can encode and decode every data point.
    */
+  @JSExport("applyJson")
   def apply(json: String): Codec =
     Preprocessor.ofJson(json)
       .pipe(Codec.apply)

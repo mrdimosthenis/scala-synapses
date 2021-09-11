@@ -1,5 +1,8 @@
 package synapses.lib
 
+import scala.scalajs.js
+import scala.scalajs.js.annotation.{JSExport, JSExportTopLevel}
+import scala.scalajs.js.JSConverters._
 import scala.util.chaining._
 import synapses.model.Mathematics
 
@@ -33,6 +36,7 @@ import synapses.model.Mathematics
  *  )
  * }}}
  */
+@JSExportTopLevel("StatsJs")
 object Stats:
 
   /** Root Mean Square Error.
@@ -42,10 +46,12 @@ object Stats:
    * @param outputPairs An iterator of pairs that contain the expected and predicted values.
    * @return The value of the RMSE metric.
    */
-  def rmse(outputPairs: Iterator[(List[Double], List[Double])]): Double =
+  @JSExport
+  def rmse(outputPairs: js.Iterable[js.Array[js.Array[Double]]]): Double =
     outputPairs
-      .map { case (yHat, y) =>
-        (yHat.to(LazyList), y.to(LazyList))
+      .to(Iterator)
+      .map{ arr =>
+        (arr(0).to(LazyList), arr(1).to(LazyList))
       }
       .pipe(Mathematics.rootMeanSquareError)
 
@@ -58,9 +64,11 @@ object Stats:
    * @param outputPairs An iterator of pairs that contain the expected and predicted values.
    * @return The score of the classification accuracy.
    */
-  def score(outputPairs: Iterator[(List[Double], List[Double])]): Double =
+  @JSExport
+  def score(outputPairs: js.Iterable[js.Array[js.Array[Double]]]): Double =
     outputPairs
-      .map { case (yHat, y) =>
-        (yHat.to(LazyList), y.to(LazyList))
+      .to(Iterator)
+      .map{ arr =>
+        (arr(0).to(LazyList), arr(1).to(LazyList))
       }
       .pipe(Mathematics.accuracy)

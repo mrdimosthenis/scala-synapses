@@ -1,5 +1,8 @@
 package synapses.lib
 
+import scala.scalajs.js
+import scala.scalajs.js.annotation.{JSExport, JSExportTopLevel}
+import scala.scalajs.js.JSConverters._
 import scala.util.chaining._
 import scala.util.Random
 import synapses.lib.Fun
@@ -24,6 +27,7 @@ import synapses.model.net_elems.network._
  *  net.json()
  * }}}
  */
+@JSExportTopLevel("NetJs")
 case class Net(layers: LazyList[Layer]):
 
   private def throwIfInputNotMatch(network: Network, inputValues: List[Double]): Unit =
@@ -49,12 +53,13 @@ case class Net(layers: LazyList[Layer]):
    * @param inputValues The values of the features. Their size should be equal to the size of the input layer.
    * @return The prediction. It's size should be equal to the size of the output layer.
    */
-  def predict(inputValues: List[Double]): List[Double] =
-    throwIfInputNotMatch(layers, inputValues)
+  @JSExport
+  def predict(inputValues: js.Array[Double]): js.Array[Double] =
+    throwIfInputNotMatch(layers, inputValues.toList)
     inputValues
       .to(LazyList)
       .pipe(Network.output(_, false)(layers))
-      .toList
+      .toJSArray
 
   /** Makes a prediction for the provided input.
    * 
@@ -71,16 +76,16 @@ case class Net(layers: LazyList[Layer]):
       .pipe(Network.output(_, true)(layers))
       .toList
 
-  def errors(inputValues: List[Double],
-             expectedOutput: List[Double],
-             inParallel: Boolean = false): List[Double] =
-    throwIfInputNotMatch(layers, inputValues)
-    throwIfExpectedNotMatch(layers, expectedOutput)
+  @JSExport
+  def errors(inputValues: js.Array[Double],
+             expectedOutput: js.Array[Double]): js.Array[Double] =
+    throwIfInputNotMatch(layers, inputValues.toList)
+    throwIfExpectedNotMatch(layers, expectedOutput.toList)
     val input = inputValues.to(LazyList)
     val expected = expectedOutput.to(LazyList)
     Network
-      .errors(input, expected, inParallel)(layers)
-      .toList
+      .errors(input, expected, false)(layers)
+      .toJSArray
 
   /** Returns the neural network with its weights adjusted to the provided observation.
    * 
@@ -94,11 +99,12 @@ case class Net(layers: LazyList[Layer]):
    * @return A new neural network that has the same shape of the original,
    *         but it has learned from a single observation.
    */
+  @JSExport
   def fit(learningRate: Double,
-          inputValues: List[Double],
-          expectedOutput: List[Double]): Net =
-    throwIfInputNotMatch(layers, inputValues)
-    throwIfExpectedNotMatch(layers, expectedOutput)
+          inputValues: js.Array[Double],
+          expectedOutput: js.Array[Double]): Net =
+    throwIfInputNotMatch(layers, inputValues.toList)
+    throwIfExpectedNotMatch(layers, expectedOutput.toList)
     val input = inputValues.to(LazyList)
     val expected = expectedOutput.to(LazyList)
     Network
@@ -134,6 +140,7 @@ case class Net(layers: LazyList[Layer]):
    *
    * @return The JSON representation of the neural network.
    */
+  @JSExport
   def json(): String =
     NetworkSerialized.toJson(layers)
 
@@ -143,6 +150,7 @@ case class Net(layers: LazyList[Layer]):
    *         The color of each neuron depends on its activation function
    *         while the transparency of the synapses depends on their weight.
    */
+  @JSExport
   def svg(): String =
     Draw.networkSVG(layers)
 
@@ -170,6 +178,7 @@ case class Net(layers: LazyList[Layer]):
  *  val net = Net(List(4, 8, 3), _ => Fun.tanh, _ => Random().nextDouble())
  * }}}
  */
+@JSExportTopLevel("NetJsObj")
 object Net:
 
   /** Creates a neural network.
@@ -179,7 +188,10 @@ object Net:
    * @param weightInitF A function that accepts the index of a layer and returns a weight for the synapses of its neurons.
    * @return A new neural network.
    */
-  def apply(layerSizes: List[Int], activationF: Int => Fun, weightInitF: Int => Double): Net =
+  @JSExport("apply")
+  def apply(layerSizes: js.Array[Int],
+            activationF: js.Function1[Int, Fun],
+            weightInitF: js.Function1[Int, Double]): Net =
     layerSizes
       .to(LazyList)
       .pipe(Network.init(_, activationF, weightInitF))
@@ -197,7 +209,8 @@ object Net:
    *                   In order for a neural network to be deep, the list should contain more than two numbers.
    * @return A new neural network.
    */
-  def apply(layerSizes: List[Int]): Net =
+  @JSExport("applyRandom")
+  def apply(layerSizes: js.Array[Int]): Net =
     val activationF = (_: Int) => Fun.sigmoid
     val weightInitF = (_: Int) => 1.0 - 2.0 * Random().nextDouble()
     apply(layerSizes, activationF, weightInitF)
@@ -212,7 +225,8 @@ object Net:
    * @param seed       A number used to initialize the internal pseudorandom number generator.
    * @return A new neural network.
    */
-  def apply(layerSizes: List[Int], seed: Long): Net =
+  @JSExport("applySeed")
+  def apply(layerSizes: js.Array[Int], seed: Int): Net =
     val activationF = (_: Int) => Fun.sigmoid
     val rnd = new Random(seed)
     val weightInitF =
@@ -225,6 +239,7 @@ object Net:
    * @param json The JSON representation of a neural network.
    * @return A neural network.
    */
+  @JSExport("applyJson")
   def apply(json: String): Net =
     json
       .pipe(NetworkSerialized.ofJson)
