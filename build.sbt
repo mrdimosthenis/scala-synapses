@@ -12,7 +12,7 @@ inThisBuild(List(
   )
 ))
 
-val scala3Version = "3.0.1"
+val scala3Version = "3.3.1"
 
 val circeVersion = "0.14.1"
 
