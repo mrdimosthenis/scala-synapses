@@ -5,11 +5,9 @@ import synapses.lib._
 
 class BinaryDeepNetworkTest:
 
-  // a "somewhat deep" network with 37 hidden layers and a single output
-  val layerSizesLarge = List(1024) ++ List.fill(67)(6) ++ List(1)
-
-  // same input and output layers but with only one hidden layer
-  val layerSizesSmall= List(1024) ++ List(6) ++ List(1)
+  // for constructing networks of varying depth
+  def layerSizesF( num_hidden_layers: Int, num_neurons_per_hidden_layer:Int = 6) = 
+    List(1024) ++ List.fill(num_hidden_layers)(num_neurons_per_hidden_layer) ++ List(1)
 
   val rand = new Random(1000)
   private def randBits(n: Int) = List.range(0,n).map(_ => rand.nextBoolean())
@@ -20,48 +18,57 @@ class BinaryDeepNetworkTest:
   val input1 = randBits(1024).map(bool2Double)
   val input2 = randBits(1024).map(bool2Double)
 
-  def activationF(layerIndex: Int): Fun =
-    layerIndex match
-      case _ => Fun.leakyReLU
-
-  def weightInitFlarge( layerIndex: Int): Double =
-    // Uniform Xavier Initialization
-    // https://365datascience.com/tutorials/machine-learning-tutorials/what-is-xavier-initialization/
-
-    // get the number of inputs and outputs for the layer in question
-    val (num_inputs, num_outputs) = layerIndex match 
-      case 0 => 
-        // input layer always has same number of inputs and outputs
-        (layerSizesLarge(0),layerSizesLarge(0))
-      case i if( i == layerSizesLarge.size - 1 ) => 
-        // output layer has inputs, but no outputs
-        (layerSizesLarge(layerIndex - 1), 0)
-      case i => 
-        // inner layers have num inputs from prev layer
-        (layerSizesLarge(layerIndex - 1), layerSizesLarge(layerIndex))
-    
-    // return weight selected uniformly from [-x,x]
-    val x = math.sqrt(6.0 / (num_inputs + num_outputs))
-    rand.between(-x,x)
-
-
-  def weightInitFsmall(_layerIndex: Int): Double =
-    1.0 - 2.0 * rand.nextDouble()
-
-  val largeNet = Net(layerSizesLarge, activationF, weightInitFlarge)
-  val smallNet = Net(layerSizesSmall, activationF, weightInitFsmall)
-
   @Test def `inputs not equal`(): Unit = 
     assertNotEquals(input1, input2)
 
   @Test def `different inputs should give different outputs`(): Unit =
+    // a "somewhat deep" network
+    // even as few as 67 hidden layers seems to cause the test to fail every few tries
+    val layerSizes = layerSizesF(num_hidden_layers = 167, num_neurons_per_hidden_layer = 6)
+
+    def activationF(layerIndex: Int): Fun =
+      layerIndex match
+        case _ => Fun.leakyReLU
+
+    def weightInitF( layerIndex: Int): Double =
+      // Uniform Xavier Initialization
+      // https://365datascience.com/tutorials/machine-learning-tutorials/what-is-xavier-initialization/
+
+      // get the number of inputs and outputs for the layer in question
+      val (num_inputs, num_outputs) = layerIndex match 
+        case 0 => 
+          // input layer always has same number of inputs and outputs
+          (layerSizes(0),layerSizes(0))
+        case i if( i == layerSizes.length - 1 ) => 
+          // output layer has inputs, but no outputs
+          (layerSizes(layerIndex - 1), 0)
+        case i => 
+          // inner layers have num inputs from prev layer
+          (layerSizes(layerIndex - 1), layerSizes(layerIndex))
+      
+      // return weight selected uniformly from [-x,x]
+      val x = math.sqrt(6.0 / (num_inputs + num_outputs))
+      rand.between(-x,x)
+    
+    val net = Net(layerSizes, activationF, weightInitF)
+
     assertNotEquals(
-      largeNet.parPredict(input1),
-      largeNet.parPredict(input2)
+      "large net with different inputs should still give different outputs",
+      net.parPredict(input1),
+      net.parPredict(input2)
     )
   
   @Test def `but smaller network properly gives different outputs`(): Unit =
+    val layerSizes = layerSizesF(num_hidden_layers = 1, num_neurons_per_hidden_layer = 6)
+
+    def activationF( layerIndex: Int) = Fun.leakyReLU
+  
+    def weightInitF( layerIndex: Int): Double =
+      1.0 - 2.0 * rand.nextDouble()
+
+    val net = Net(layerSizes, activationF, weightInitF)
     assertNotEquals(
-      smallNet.parPredict(input1),
-      smallNet.parPredict(input2)
+      "small net with different inputs should give different outputs",
+      net.parPredict(input1),
+      net.parPredict(input2)
     )
