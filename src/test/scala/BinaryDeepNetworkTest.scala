@@ -26,7 +26,7 @@ class BinaryDeepNetworkTest:
     // note: if the hidden layer sizes are significantly smaller than the input layer there
     // may be too much information loss and this test may fail. The below parameters seem
     // to work.
-    val layerSizes = layerSizesF(num_hidden_layers = 700, num_neurons_per_hidden_layer = 300)
+    val layerSizes = layerSizesF(num_hidden_layers = 50, num_neurons_per_hidden_layer = 300)
 
     def activationF(layerIndex: Int): Fun =
       layerIndex match
@@ -59,6 +59,13 @@ class BinaryDeepNetworkTest:
       net.parPredict(input1),
       net.parPredict(input2)
     )
+
+    // is this network even trainable?
+    println("fitting to input1")
+    val fitted = net.parFit(0.1, input1, expectedOutput = List(0.0))
+    println("predicting from input2")
+    println(fitted.parPredict(input2))
+    println("done")
   
   @Test def `but smaller network properly gives different outputs`(): Unit =
     val layerSizes = layerSizesF(num_hidden_layers = 1, num_neurons_per_hidden_layer = 6)
