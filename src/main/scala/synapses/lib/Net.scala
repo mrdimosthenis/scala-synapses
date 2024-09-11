@@ -73,13 +73,14 @@ case class Net(layers: LazyList[Layer]):
 
   def errors(inputValues: List[Double],
              expectedOutput: List[Double],
-             inParallel: Boolean = false): List[Double] =
+             inParallel: Boolean = false,
+             dLossF: (Double,Double) => Double = (x,y) => x-y ): List[Double] =
     throwIfInputNotMatch(layers, inputValues)
     throwIfExpectedNotMatch(layers, expectedOutput)
     val input = inputValues.to(LazyList)
     val expected = expectedOutput.to(LazyList)
     Network
-      .errors(input, expected, inParallel)(layers)
+      .errors(input, expected, inParallel, dLossF)(layers)
       .toList
 
   /** Returns the neural network with its weights adjusted to the provided observation.
@@ -91,18 +92,22 @@ case class Net(layers: LazyList[Layer]):
    * @param inputValues    The feature values of the observation.
    * @param expectedOutput The expected output of the observation.
    *                       It's size should be equal to the size of the output layer.
+   * @param dLossF         The derivative of the chosen loss function. The default
+   *                       loss function is mean squared error, so its derivative is
+   *                       simply `x - y` where `x` is the output and `y` is the expected output.
    * @return A new neural network that has the same shape of the original,
    *         but it has learned from a single observation.
    */
   def fit(learningRate: Double,
           inputValues: List[Double],
-          expectedOutput: List[Double]): Net =
+          expectedOutput: List[Double],
+          dLossF: (Double,Double) => Double = (x,y) => x-y ): Net =
     throwIfInputNotMatch(layers, inputValues)
     throwIfExpectedNotMatch(layers, expectedOutput)
     val input = inputValues.to(LazyList)
     val expected = expectedOutput.to(LazyList)
     Network
-      .fit(learningRate, input, expected, false)(layers)
+      .fit(learningRate, input, expected, inParallel = false, dLossF)(layers)
       .pipe(Network.realize)
       .pipe(Net.apply)
 
@@ -115,18 +120,22 @@ case class Net(layers: LazyList[Layer]):
    * @param inputValues    The feature values of the observation.
    * @param expectedOutput The expected output of the observation.
    *                       It's size should be equal to the size of the output layer.
+   * @param dLossF         The derivative of the chosen loss function. The default
+   *                       loss function is mean squared error, so its derivative is
+   *                       simply `x - y` where `x` is the output and `y` is the expected output.
    * @return A new neural network that has the same shape of the original,
    *         but it has learned from a single observation.
    */
   def parFit(learningRate: Double,
              inputValues: List[Double],
-             expectedOutput: List[Double]): Net =
+             expectedOutput: List[Double],
+             dLossF: (Double,Double) => Double = (x,y) => x-y ): Net =
     throwIfInputNotMatch(layers, inputValues)
     throwIfExpectedNotMatch(layers, expectedOutput)
     val input = inputValues.to(LazyList)
     val expected = expectedOutput.to(LazyList)
     Network
-      .fit(learningRate, input, expected, true)(layers)
+      .fit(learningRate, input, expected, inParallel = true, dLossF)(layers)
       .pipe(Network.realize)
       .pipe(Net.apply)
 

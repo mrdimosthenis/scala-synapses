@@ -76,14 +76,15 @@ object Network:
   private def backPropagated(learningRate: Double,
                              expectedOutput: LazyList[Double],
                              reversedInputsWithLayers: LazyList[(LazyList[Double], Layer)],
-                             inParallel: Boolean)
+                             inParallel: Boolean,
+                             dLossF: (Double,Double) => Double = (x,y) => x-y )
   : (LazyList[Double], Network) =
     val (lastInput, lastLayer) = reversedInputsWithLayers.head
     val output = Layer.output(lastInput, inParallel)(lastLayer)
     val outputWithErrors =
       output
         .zip(expectedOutput)
-        .map(t => t._1 - t._2)
+        .map(dLossF.tupled)
         .pipe(output.zip)
     val (initErrors, firstPropagated) =
       Layer.backPropagated(
@@ -99,23 +100,27 @@ object Network:
 
   def errors(input: LazyList[Double],
              expectedOutput: LazyList[Double],
-             inParallel: Boolean)
+             inParallel: Boolean,
+             dLossF: (Double,Double) => Double = (x,y) => x-y )
             (network: Network): LazyList[Double] =
     backPropagated(
       0.0, // errors should not depend on the learning rate
       expectedOutput,
       fedForward(input, inParallel)(network),
-      inParallel
+      inParallel,
+      dLossF
     )._1
 
   def fit(learningRate: Double,
           input: LazyList[Double],
           expectedOutput: LazyList[Double],
-          inParallel: Boolean)
+          inParallel: Boolean,
+          dLossF: (Double,Double) => Double = (x,y) => x-y )
          (network: Network): Network =
     backPropagated(
       learningRate,
       expectedOutput,
       fedForward(input, inParallel)(network),
-      inParallel
+      inParallel,
+      dLossF
     )._2
